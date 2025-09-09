@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우주 탐험: 태양계 친구들!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Gowun Dodum', sans-serif;
+            background-color: #0c0a1e; /* 깊은 우주 색 */
+            background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+            radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+            radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px),
+            radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 2px, transparent 30px);
+            background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px;
+            background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+        }
+        .card-glow {
+            transition: all 0.3s ease-in-out;
+        }
+        .card-glow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+        }
+        @keyframes rainbow-glow {
+            0% { box-shadow: 0 0 20px #ff0000; }
+            15% { box-shadow: 0 0 20px #ff7f00; }
+            30% { box-shadow: 0 0 20px #ffff00; }
+            45% { box-shadow: 0 0 20px #00ff00; }
+            60% { box-shadow: 0 0 20px #0000ff; }
+            75% { box-shadow: 0 0 20px #4b0082; }
+            90% { box-shadow: 0 0 20px #8f00ff; }
+            100% { box-shadow: 0 0 20px #ff0000; }
+        }
+        .quiz-card-glow {
+            animation: rainbow-glow 4s linear infinite;
+            border-color: transparent !important;
+        }
+        /* 스크롤바 커스텀 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e1b4b; /* 인디고 950 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4f46e5; /* 인디고 600 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1; /* 인디고 500 */
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <!-- 페이지 헤더 -->
+    <header class="text-center py-8 md:py-12">
+        <h1 class="text-4xl md:text-6xl font-bold tracking-tight">🪐 우리 태양계 친구들! 🌏</h1>
+        <p class="mt-4 text-lg md:text-xl text-gray-300">4학년 5반 친구들~ 알고 싶은 별 및 행성 카드를 눌러 탐험해 보세요!</p>
+    </header>
+
+    <!-- 천체 카드 그리드 -->
+    <main id="celestial-grid" class="container mx-auto px-4 pb-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <!-- 자바스크립트로 카드가 여기에 생성됩니다. -->
+    </main>
+    
+    <!-- 상세 정보 모달 (팝업창) -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center p-4 z-50 hidden transition-opacity duration-300">
+        <div id="modal-content" class="bg-slate-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300">
+            <!-- 모달 내용이 여기에 채워집니다. -->
+        </div>
+    </div>
+
+    <script>
+        const celestialBodies = [
+            {
+                name: '태양', engName: 'The Sun',
+                imgSrc: 'https://photojournal.jpl.nasa.gov/jpeg/PIA19821.jpg',
+                surface: '딱딱한 땅이 없는 뜨거운 <strong>가스 덩어리</strong>예요. 표면이 부글부글 끓고 있고, 거대한 불기둥(홍염)이 솟아오르기도 해요.',
+                color: '실제로는 <strong>흰색</strong>에 가깝지만, 우리 눈에는 주로 <strong>노란색이나 붉은색</strong>으로 보여요.',
+                rings: '없어요 (X)',
+                orbitalPeriod: '태양계의 중심이라 공전하지 않아요.',
+                features: '지름이 지구의 약 109배나 되는 거대한 별이에요. 태양계 전체 질량의 99.8%를 차지할 정도로 아주 무겁답니다!',
+                borderColor: 'border-yellow-400'
+            },
+            {
+                name: '수성', engName: 'Mercury',
+                imgSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Mercury_in_true_color.jpg/1024px-Mercury_in_true_color.jpg',
+                surface: '<strong>암석</strong>으로 되어 있고, 운석이 부딪쳐 생긴 구덩이(크레이터)가 아주 많아요. 마치 달의 표면과 비슷해요.',
+                color: '<strong>진한 회색</strong>',
+                rings: '없어요 (X)',
+                orbitalPeriod: '약 88일',
+                features: '지름이 지구의 1/3 정도로 작아요. 대기가 거의 없어 낮에는 430℃, 밤에는 -180℃까지 온도가 변하는 극한의 행성이랍니다! 🥶',
+                borderColor: 'border-gray-400'
+            },
+            {
+                name: '금성', engName: 'Venus',
+                imgSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Venus-real_color.jpg/1024px-Venus-real_color.jpg',
+                surface: '<strong>암석</strong>으로 된 땅이 있지만, <strong>아주 두꺼운 이산화탄소 구름</strong>에 덮여 있어서 표면을 보기 힘들어요.',
+                color: '<strong>밝은 노란색</strong> (두꺼운 구름의 색깔이에요)',
+                rings: '없어요 (X)',
+                orbitalPeriod: '약 225일',
+                features: "크기와 질량이 지구와 비슷해 '쌍둥이 행성'으로 불려요. 하지만 두꺼운 이산화탄소 대기 때문에 태양계에서 가장 뜨거운 행성이 되었어요. 🔥",
+                borderColor: 'border-yellow-200'
+            },
+            {
+                name: '지구', engName: 'Earth',
+                imgSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/The_Blue_Marble_%28remastered%29.jpg/1024px-The_Blue_Marble_%28remastered%29.jpg',
+                surface: '<strong>암석</strong>으로 된 땅(육지)과 <strong>액체 상태의 물</strong>(바다)이 함께 있어요.',
+                color: '<strong>푸른색, 초록색, 흰색</strong> 등이 어우러져 있어요.',
+                rings: '없어요 (X)',
+                orbitalPeriod: '약 365일 (1년)',
+                features: '우리가 사는 유일한 집! 표면에 액체 상태의 물(바다)이 있고, 생명체가 숨쉴 수 있는 대기를 가진 특별한 행성이에요. 💙',
+                borderColor: 'border-blue-500'
+            },
+            {
+                name: '화성', engName: 'Mars',
+                imgSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/1024px-OSIRIS_Mars_true_color.jpg',
+                surface: '<strong>붉은 흙과 암석</strong>으로 덮여 있어요. 거대한 화산과 깊은 협곡이 있고, 양쪽 극지방에는 얼음(극관)이 있어요.',
+                color: '<strong>붉은색</strong> (흙에 녹슨 철 성분이 많기 때문이에요)',
+                rings: '없어요 (X)',
+                orbitalPeriod: '약 687일 (지구의 약 2배)',
+                features: "지름이 지구의 절반 정도예요. 태양계에서 가장 큰 화산 '올림푸스산'이 있고, '포보스'와 '데이모스'라는 두 개의 작은 달을 가지고 있답니다.",
+                borderColor: 'border-red-500'
+            },
+            {
+                name: '목성', engName: 'Jupiter',
+                imgSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg/1024px-Jupiter_and_its_shrunken_Great_Red_Spot.jpg',
+                surface: '딱딱한 땅이 없는 <strong>거대한 가스 행성</strong>이에요. 표면처럼 보이는 것은 휘몰아치는 가스 구름의 모습이에요.',
+                color: '<strong>주황색, 갈색, 흰색</strong>의 줄무늬가 보여요.',
+                rings: '<strong>있어요 (O)</strong> - 하지만 아주 희미해서 잘 보이지 않아요.',
+                orbitalPeriod: '약 12년',
+                features: "지름이 지구의 11배나 되는 태양계의 왕이에요! 다른 모든 행성을 합친 것보다 2.5배나 더 무겁답니다. 유명한 <strong>'대적점'</strong>은 지구보다 큰 거대한 폭풍이에요! 🌪️",
+                borderColor: 'border-orange-400'
+            },
+            {
+                name: '토성', engName: 'Saturn',
+                imgSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/1024px-Saturn_during_Equinox.jpg',
+                surface: '목성처럼 땅이 없는 <strong>가스 행성</strong>이에요.',
+                color: '<strong>연한 노란색</strong>',
+                rings: '<strong>있어요 (O)</strong> - <strong>크고 아름다운 얼음 고리</strong>를 가지고 있어요. 태양계에서 가장 멋진 고리랍니다! 💍',
+                orbitalPeriod: '약 29.5년',
+                features: '지름이 지구의 9배나 되는 커다란 행성이에요. 아름다운 고리뿐만 아니라 80개가 넘는 많은 달들을 거느리고 있답니다! 🛰️',
+                borderColor: 'border-yellow-300'
+            },
+            {
+                name: '천왕성', engName: 'Uranus',
+                imgSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Uranus2.jpg/1024px-Uranus2.jpg',
+                surface: "<strong>얼음과 가스</strong>로 이루어져 있어요. '거대 얼음 행성'으로 불려요.",
+                color: '<strong>청록색</strong> (대기의 메테인 성분이 붉은빛을 흡수해서 푸르게 보여요)',
+                rings: '<strong>있어요 (O)</strong> - 토성만큼 화려하진 않지만, 가늘고 어두운 고리가 있어요.',
+                orbitalPeriod: '약 84년',
+                features: '지름이 지구의 4배 정도예요. 거의 옆으로 누워서 자전하는 독특한 행성이며, 태양계에서 가장 추운 행성(-224℃)이기도 해요!',
+                borderColor: 'border-cyan-300'
+            },
+            {
+                name: '해왕성', engName: 'Neptune',
+                imgSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Neptune.jpg/1024px-Neptune.jpg',
+                surface: "천왕성처럼 <strong>얼음과 가스</strong>로 이루어진 '거대 얼음 행성'이에요.",
+                color: '<strong>파란색</strong> (천왕성보다 메테인 함량이 높아서 더 짙은 파란색으로 보여요)',
+                rings: '<strong>있어요 (O)</strong> - 희미한 여러 개의 고리가 있어요.',
+                orbitalPeriod: '약 165년',
+                features: '지름이 지구의 약 4배예요. 태양에서 가장 멀리 떨어져 있어 태양 주위를 한 바퀴 도는 데 무려 165년이나 걸린답니다! ⏳',
+                borderColor: 'border-blue-700'
+            }
+        ];
+
+        const quizData = [
+            // 기존 문제
+            { question: "태양계에서 가장 뜨거운 행성은 어디일까요?", options: ["수성", "금성", "화성", "목성"], answer: "금성" },
+            { question: "아름다운 얼음 고리를 가진 행성은 무엇일까요?", options: ["목성", "해왕성", "토성", "천왕성"], answer: "토성" },
+            { question: "태양계에서 가장 큰 행성은 무엇일까요?", options: ["지구", "토성", "해왕성", "목성"], answer: "목성" },
+            { question: "'붉은 행성'이라는 별명을 가진 행성은 무엇일까요?", options: ["화성", "금성", "수성", "태양"], answer: "화성" },
+            { question: "태양 주위를 한 바퀴 도는 데 165년이나 걸리는 행성은?", options: ["천왕성", "토성", "해왕성", "목성"], answer: "해왕성" },
+            // 새로운 문제
+            { question: "우리 태양계에서 가장 작은 행성은 무엇일까요?", options: ["수성", "화성", "지구", "해왕성"], answer: "수성" },
+            { question: "지구와 크기가 비슷해 '쌍둥이 행성'으로 불리는 행성은?", options: ["금성", "화성", "수성", "목성"], answer: "금성" },
+            { question: "우리가 사는, 표면에 액체 상태의 물이 있는 유일한 행성은?", options: ["지구", "화성", "금성", "천왕성"], answer: "지구" },
+            { question: "태양계에서 가장 큰 화산 '올림푸스산'이 있는 행성은?", options: ["화성", "지구", "목성", "토성"], answer: "화성" },
+            { question: "지구보다 큰 거대한 폭풍 '대적점'이 있는 행성은?", options: ["목성", "토성", "천왕성", "해왕성"], answer: "목성" },
+            { question: "거의 옆으로 누워서 자전하는 독특한 행성은 무엇일까요?", options: ["천왕성", "해왕성", "토성", "지구"], answer: "천왕성" },
+            { question: "태양계에서 바람이 가장 강하게 부는 행성은 어디일까요?", options: ["해왕성", "목성", "토성", "지구"], answer: "해왕성" },
+            { question: "스스로 빛을 내는 태양은 행성과 별 중 무엇일까요?", options: ["별", "행성", "위성", "소행성"], answer: "별" },
+            { question: "1년이 88일밖에 안될 정도로 태양 주위를 가장 빨리 도는 행성은?", options: ["수성", "금성", "화성", "지구"], answer: "수성" },
+            { question: "물보다 가벼워서 거대한 바다에 띄울 수 있는 행성은?", options: ["토성", "목성", "지구", "화성"], answer: "토성" }
+        ];
+        
+        const grid = document.getElementById('celestial-grid');
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+
+        // localStorage에서 확인한 카드 목록 불러오기
+        let viewedCards = new Set(JSON.parse(localStorage.getItem('viewedSolarSystemCards')) || []);
+        let isQuizCardShown = false;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let shuffledQuizData = [];
+
+        // 배열을 섞는 함수
+        function shuffleArray(array) {
+            const newArr = array.slice(); // 원본 배열을 복사
+            for (let i = newArr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+            }
+            return newArr;
+        }
+
+        // 천체 카드를 동적으로 생성
+        celestialBodies.forEach((body, index) => {
+            const card = document.createElement('div');
+            const isViewed = viewedCards.has(index);
+            card.className = `relative bg-slate-900/50 backdrop-blur-sm rounded-xl p-4 text-center cursor-pointer card-glow border-2 ${body.borderColor}`;
+            card.innerHTML = `
+                <div class="checkmark absolute top-3 right-3 text-green-400 transition-opacity duration-300 ${isViewed ? 'opacity-100' : 'opacity-0'}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <img src="${body.imgSrc}" alt="${body.name}" class="w-full rounded-lg mb-4 aspect-square object-cover">
+                <h3 class="text-2xl font-bold">${body.name}</h3>
+                <p class="text-gray-400">${body.engName}</p>
+                <button data-index="${index}" class="mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-full w-full transition-colors">자세히 보기</button>
+            `;
+            grid.appendChild(card);
+        });
+        
+        // 페이지 로드 시, 이미 모든 카드를 봤다면 퀴즈 카드 바로 표시
+        if (viewedCards.size === celestialBodies.length) {
+            showQuizCard();
+        }
+
+        // 퀴즈 카드 보여주기
+        function showQuizCard() {
+            if (isQuizCardShown) return;
+            isQuizCardShown = true;
+            
+            const quizCard = document.createElement('div');
+            quizCard.className = 'bg-slate-900/50 backdrop-blur-sm rounded-xl p-4 text-center cursor-pointer quiz-card-glow border-2';
+            quizCard.innerHTML = `
+                <div class="w-full rounded-lg mb-4 aspect-square object-cover flex items-center justify-center text-6xl">🚀</div>
+                <h3 class="text-2xl font-bold">도전! 우주 퀴즈</h3>
+                <p class="text-gray-400">Quiz Time!</p>
+                <button data-type="quiz" class="mt-4 bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded-full w-full transition-colors">퀴즈 풀기</button>
+            `;
+            grid.appendChild(quizCard);
+        }
+
+        // 퀴즈 시작
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            const allShuffledData = shuffleArray(quizData); // 전체 퀴즈 데이터를 섞고
+            shuffledQuizData = allShuffledData.slice(0, 5); // 그 중에서 5개만 선택
+            displayQuizQuestion();
+        }
+
+        // 퀴즈 질문 표시
+        function displayQuizQuestion() {
+            if (currentQuestionIndex >= shuffledQuizData.length) {
+                showQuizResult();
+                return;
+            }
+            const q = shuffledQuizData[currentQuestionIndex];
+            const shuffledOptions = shuffleArray(q.options); // 보기 섞기
+            modalContent.innerHTML = `
+                <div class="p-8 text-center">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-2">🚀 우주 퀴즈 ${currentQuestionIndex + 1} / ${shuffledQuizData.length}</h2>
+                    <p class="text-xl md:text-2xl text-gray-300 mb-8">${q.question}</p>
+                    <div id="quiz-options" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${shuffledOptions.map(option => `<button class="quiz-option text-lg p-4 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors">${option}</button>`).join('')}
+                    </div>
+                     <button id="close-modal" class="absolute top-4 right-6 text-4xl text-gray-400 hover:text-white">&times;</button>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('opacity-100');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+        
+        // 퀴즈 결과 표시
+        function showQuizResult() {
+            modalContent.innerHTML = `
+                <div class="p-8 text-center">
+                    <h2 class="text-4xl font-bold mb-4">🎉 퀴즈 완료! 🎉</h2>
+                    <p class="text-2xl text-gray-300 mb-8">당신의 점수는 <span class="text-yellow-400 font-bold">${shuffledQuizData.length}</span>점 만점에 <span class="text-yellow-400 font-bold">${score}</span>점입니다!</p>
+                    <div class="flex justify-center gap-4">
+                        <button id="restart-quiz" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-full transition-colors">다시 풀기</button>
+                        <button id="close-quiz" class="bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-6 rounded-full transition-colors">닫기</button>
+                    </div>
+                </div>
+            `;
+        }
+
+
+        // 클릭 이벤트 통합 처리
+        grid.addEventListener('click', (e) => {
+            const button = e.target.closest('button');
+            if (!button) return;
+
+            if (button.dataset.index) {
+                const index = parseInt(button.dataset.index, 10);
+                const body = celestialBodies[index];
+                
+                modalContent.innerHTML = `
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                             <h2 class="text-4xl font-bold mb-4">${body.name} <span class="text-2xl text-gray-400">${body.engName}</span></h2>
+                             <button id="close-modal" class="text-4xl text-gray-400 hover:text-white">&times;</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <img src="${body.imgSrc}" alt="${body.name}" class="w-full rounded-lg aspect-square object-cover">
+                            </div>
+                            <div class="space-y-4 text-lg">
+                                <div class="bg-slate-700/50 p-4 rounded-lg"><h4 class="font-bold text-indigo-300">🎨 색깔</h4><p class="text-gray-200">${body.color}</p></div>
+                                <div class="bg-slate-700/50 p-4 rounded-lg"><h4 class="font-bold text-indigo-300">🪨 표면 상태</h4><p class="text-gray-200">${body.surface}</p></div>
+                                <div class="bg-slate-700/50 p-4 rounded-lg"><h4 class="font-bold text-indigo-300">💍 고리 유무</h4><p class="text-gray-200">${body.rings}</p></div>
+                                <div class="bg-slate-700/50 p-4 rounded-lg"><h4 class="font-bold text-indigo-300">⏳ 공전 주기</h4><p class="text-gray-200">${body.orbitalPeriod}</p></div>
+                                <div class="bg-slate-700/50 p-4 rounded-lg"><h4 class="font-bold text-indigo-300">✨ 그 밖의 특징</h4><p class="text-gray-200">${body.features}</p></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // 카드 확인 상태 처리
+                if (!viewedCards.has(index)) {
+                    viewedCards.add(index);
+                    localStorage.setItem('viewedSolarSystemCards', JSON.stringify(Array.from(viewedCards)));
+                    
+                    // 체크 표시 보이기
+                    const cardElement = button.closest('.card-glow');
+                    const checkmark = cardElement.querySelector('.checkmark');
+                    if (checkmark) {
+                        checkmark.classList.remove('opacity-0');
+                        checkmark.classList.add('opacity-100');
+                    }
+                }
+
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.add('opacity-100');
+                    modalContent.classList.add('scale-100');
+                }, 10);
+            } else if (button.dataset.type === 'quiz') {
+                startQuiz();
+            }
+        });
+        
+        // 모달 내 클릭 이벤트 처리 (정답 확인, 퀴즈 다시하기 등)
+        modalContent.addEventListener('click', e => {
+            const button = e.target.closest('button');
+            if (!button) return;
+
+            if (button.classList.contains('quiz-option')) {
+                const selectedAnswer = button.textContent;
+                const correctAnswer = shuffledQuizData[currentQuestionIndex].answer;
+                const options = modalContent.querySelectorAll('.quiz-option');
+
+                options.forEach(opt => {
+                    opt.disabled = true; // 중복 클릭 방지
+                    if (opt.textContent === correctAnswer) {
+                        opt.classList.remove('bg-slate-700');
+                        opt.classList.add('bg-green-600'); // 정답
+                    }
+                });
+
+                if (selectedAnswer === correctAnswer) {
+                    score++;
+                } else {
+                    button.classList.remove('bg-slate-700');
+                    button.classList.add('bg-red-600'); // 오답
+                }
+
+                currentQuestionIndex++;
+                setTimeout(displayQuizQuestion, 1200); // 1.2초 후 다음 문제로
+            } else if (button.id === 'restart-quiz') {
+                startQuiz();
+            } else if (button.id === 'close-quiz') {
+                closeModal();
+            }
+        });
+
+
+        // 모달 닫기
+        function closeModal() {
+            modal.classList.remove('opacity-100');
+            modalContent.classList.remove('scale-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                // 모든 카드를 다 봤는지 확인하고 퀴즈 카드 표시
+                if (viewedCards.size === celestialBodies.length) {
+                    showQuizCard();
+                }
+            }, 300);
+        }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target.id === 'modal' || e.target.closest('#close-modal')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
+
